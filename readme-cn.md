@@ -264,7 +264,7 @@ curl -F "file=@presentation.pptx" http://127.0.0.1/api/convert/pdf -o presentati
 5. **发送请求**。
 6. **从响应中下载 PDF**。
 ## python 调用示例
-```
+``` python
 import requests
 
 url = "https://java-libreoffice-server.fly.dev/api/ppt/pdf"
