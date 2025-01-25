@@ -1,4 +1,4 @@
-FROM litongjava/jre:8u391-stable-slim
+FROM litongjava/jdk:8u391-libreoffice
 
 # 设置工作目录
 WORKDIR /app
