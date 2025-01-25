@@ -1,8 +1,12 @@
 package com.litongjava.office.convert.config;
 
+import org.jodconverter.core.office.OfficeException;
+import org.jodconverter.local.office.LocalOfficeManager;
+
 import com.litongjava.annotation.AConfiguration;
 import com.litongjava.annotation.Initialization;
 import com.litongjava.context.BootConfiguration;
+import com.litongjava.hook.HookCan;
 import com.litongjava.office.convert.handler.HelloHandler;
 import com.litongjava.office.convert.handler.OfficeDocToPdfHandler;
 import com.litongjava.office.convert.handler.OfficeOdpToPdfHandler;
@@ -14,13 +18,38 @@ import com.litongjava.office.convert.handler.OfficeXlsToPdfHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
+import lombok.extern.slf4j.Slf4j;
+
 @AConfiguration
+@Slf4j
 public class WebHelloConfig implements BootConfiguration {
 
   @Initialization
   public void config() {
 
     TioBootServer server = TioBootServer.me();
+
+    LocalOffice.manager = LocalOfficeManager.builder().install().build();
+    try {
+      LocalOffice.manager.start();
+      log.info("LocalOfficeManager started");
+    } catch (OfficeException e) {
+      log.error(e.getMessage(), e);
+    }
+    HookCan.me().addDestroyMethod(() -> {
+
+      // 停止OfficeManager
+      if (LocalOffice.manager != null) {
+        try {
+          LocalOffice.manager.stop();
+          log.info("LocalOfficeManager stopped");
+        } catch (OfficeException e) {
+          log.error("Error stopping OfficeManager", e);
+        }
+      }
+
+    });
+
     HttpRequestRouter requestRouter = server.getRequestRouter();
 
     HelloHandler helloHandler = new HelloHandler();

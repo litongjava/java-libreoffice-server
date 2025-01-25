@@ -8,9 +8,9 @@ import java.io.InputStream;
 import org.apache.commons.io.FileUtils;
 import org.jodconverter.core.office.OfficeException;
 import org.jodconverter.local.LocalConverter;
-import org.jodconverter.local.office.LocalOfficeManager;
 
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.office.convert.config.LocalOffice;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -41,7 +41,6 @@ public class OfficePptToPdfHandler {
     // 创建临时文件
     File inputFile = null;
     File outputFile = null;
-    LocalOfficeManager officeManager = null;
 
     try {
 
@@ -56,13 +55,9 @@ public class OfficePptToPdfHandler {
       outputFile = File.createTempFile("output-", ".pdf");
       log.info("Output PDF will be saved to temporary file: {}", outputFile.getAbsolutePath());
 
-      // 启动本地Office进程管理器
-      officeManager = LocalOfficeManager.builder().install().build();
-      officeManager.start();
-      log.info("LocalOfficeManager started");
 
       // 执行文件转换
-      LocalConverter.make(officeManager).convert(inputFile).to(outputFile).execute();
+      LocalConverter.make(LocalOffice.manager).convert(inputFile).to(outputFile).execute();
       log.info("File converted to PDF successfully");
 
       // 读取转换后的PDF文件
@@ -91,16 +86,6 @@ public class OfficePptToPdfHandler {
       log.error("Error converting file to PDF", e);
       return Resps.json(request, RespBodyVo.fail("文件转换失败"));
     } finally {
-      // 停止OfficeManager
-      if (officeManager != null) {
-        try {
-          officeManager.stop();
-          log.info("LocalOfficeManager stopped");
-        } catch (OfficeException e) {
-          log.error("Error stopping OfficeManager", e);
-        }
-      }
-
       // 删除临时文件
       if (inputFile != null && inputFile.exists()) {
         if (inputFile.delete()) {
