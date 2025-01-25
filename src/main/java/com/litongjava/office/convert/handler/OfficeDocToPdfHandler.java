@@ -49,8 +49,6 @@ public class OfficeDocToPdfHandler {
     // 创建临时文件
     File inputFile = null;
     File outputFile = null;
-    LocalOfficeManager officeManager = null;
-
     try {
       // 将上传的文件保存到临时文件
       inputFile = File.createTempFile("upload-", "." + extension);
