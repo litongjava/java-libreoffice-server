@@ -263,6 +263,7 @@ curl -F "file=@presentation.pptx" http://127.0.0.1/api/convert/pdf -o presentati
 4. **添加一个键**，命名为 `file`，将类型设置为 `File`，并**上传您的 Office 文档**。
 5. **发送请求**。
 6. **从响应中下载 PDF**。
+
 ## python 调用示例
 ``` python
 import requests
@@ -277,6 +278,42 @@ with open(file_path, 'rb') as file:
     response = requests.post(url, files=files)
 
 print(response.text)
+
+```
+
+## java调用示例
+```Java
+package com.litongjava.libreoffice;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
+import com.litongjava.model.http.response.ResponseVo;
+import com.litongjava.tio.utils.environment.EnvUtils;
+import com.litongjava.tio.utils.hutool.FileUtil;
+
+public class LibreofficeClientTest {
+
+  @Test
+  public void test() {
+    EnvUtils.load();
+    try {
+      byte[] bytes = Files.readAllBytes(Paths.get("F:\\document\\subject-docs\\04_Chemistry\\CHEM_161\\ch1\\Chapter 1 Lectture Slides Set 1.pptx"));
+      ResponseVo responseVo = LibreOfficeClient.convertToPdf(bytes, "Chapter 1 Lectture Slides Set 1.pptx");
+      if (responseVo.isOk()) {
+        FileUtil.writeBytes(responseVo.getBodyBytes(), new File("Chapter 1 Lectture Slides Set 1.pdf"));
+      } else {
+        System.err.print(responseVo.getBodyString());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+}
 
 ```
 ## 贡献指南
