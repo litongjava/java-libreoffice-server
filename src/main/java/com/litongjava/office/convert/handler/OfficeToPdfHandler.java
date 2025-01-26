@@ -26,7 +26,7 @@ public class OfficeToPdfHandler {
   /**
    * 支持的文件类型
    */
-  private static final String[] SUPPORTED_EXTENSIONS = { "doc", "docx", "xls", "xlsx", "odt", "ods", "odp" };
+  private static final String[] SUPPORTED_EXTENSIONS = { "doc", "docx", "xls", "xlsx","ppt","pptx", "odt", "ods", "odp" };
 
   /**
    * 将上传的Office文件转换为PDF并返回给客户端下载
